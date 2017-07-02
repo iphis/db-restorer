@@ -56,10 +56,6 @@ class PostgreSql extends DbRestorer
             $command[] = '-t '.implode(' -t ', $this->onlyTables);
         }
 
-        if (!empty($this->excludeTables)) {
-            $command[] = '-T '.implode(' -T ', $this->excludeTables);
-        }
-
         $command[] = "{$dumpFile}";
 
         return implode(' ', $command);
