@@ -1,0 +1,42 @@
+{
+  "name": "iphis/db-restorer",
+  "description": "Restore databases",
+  "keywords": [
+    "iphis",
+    "dump",
+    "restore",
+    "database",
+    "mysqldump",
+    "db-dumper"
+  ],
+  "homepage": "https://github.com/iphis/db-restorer",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Tobias Knipping",
+      "email": "knipping@tk-schulsoftware.de",
+      "homepage": "https://tk-schulsoftware.de",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": "^7.0",
+    "symfony/process": "^3.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Iphis\\DbRestorer\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Iphis\\DbRestorer\\Test\\": "tests"
+    }
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit"
+  }
+}
