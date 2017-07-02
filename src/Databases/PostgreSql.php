@@ -58,12 +58,12 @@ class PostgreSql extends DbRestorer
      */
     public function getRestoreCommand(string $dumpFile): string
     {
-        $command = [
+        $command = array(
             "'{$this->restoreBinaryPath}pg_restore'",
             "-U {$this->userName}",
             '-h '.($this->socket === '' ? $this->host : $this->socket),
             "-p {$this->port}",
-        ];
+        );
 
         foreach ($this->extraOptions as $extraOption) {
             $command[] = $extraOption;
@@ -88,20 +88,20 @@ class PostgreSql extends DbRestorer
 
     public function getContentsOfCredentialsFile(): string
     {
-        $contents = [
+        $contents = array(
             $this->host,
             $this->port,
             $this->dbName,
             $this->userName,
             $this->password,
-        ];
+        );
 
         return implode(':', $contents);
     }
 
     protected function guardAgainstIncompleteCredentials()
     {
-        foreach (['userName', 'dbName', 'host'] as $requiredProperty) {
+        foreach (array('userName', 'dbName', 'host') as $requiredProperty) {
             if (empty($this->$requiredProperty)) {
                 throw CannotStartRestore::emptyParameter($requiredProperty);
             }
@@ -110,9 +110,9 @@ class PostgreSql extends DbRestorer
 
     protected function getEnvironmentVariablesForRestoreCommand(string $temporaryCredentialsFile): array
     {
-        return [
+        return array(
             'PGPASSFILE' => $temporaryCredentialsFile,
             'PGDATABASE' => $this->dbName,
-        ];
+        );
     }
 }

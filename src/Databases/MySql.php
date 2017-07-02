@@ -3,8 +3,8 @@
 namespace Iphis\DbRestorer\Databases;
 
 use Iphis\DbRestorer\DbRestorer;
-use Symfony\Component\Process\Process;
 use Iphis\DbRestorer\Exceptions\CannotStartRestore;
+use Symfony\Component\Process\Process;
 
 class MySql extends DbRestorer
 {
@@ -117,7 +117,7 @@ class MySql extends DbRestorer
 
         $process = new Process($command);
 
-        if (! is_null($this->timeout)) {
+        if (!is_null($this->timeout)) {
             $process->setTimeout($this->timeout);
         }
 
@@ -138,10 +138,10 @@ class MySql extends DbRestorer
     {
         $quote = $this->determineQuote();
 
-        $command = [
+        $command = array(
             "{$quote}{$this->restoreBinaryPath}mysqldump{$quote}",
             "--defaults-extra-file=\"{$temporaryCredentialsFile}\"",
-        ];
+        );
 
         if ($this->skipComments) {
             $command[] = '--skip-comments';
@@ -161,7 +161,7 @@ class MySql extends DbRestorer
             $command[] = "--ignore-table={$this->dbName}.{$tableName}";
         }
 
-        if (! empty($this->defaultCharacterSet)) {
+        if (!empty($this->defaultCharacterSet)) {
             $command[] = '--default-character-set='.$this->defaultCharacterSet;
         }
 
@@ -173,7 +173,7 @@ class MySql extends DbRestorer
 
         $command[] = "{$this->dbName}";
 
-        if (! empty($this->onlyTables)) {
+        if (!empty($this->onlyTables)) {
             $command[] = implode(' ', $this->onlyTables);
         }
 
@@ -182,20 +182,20 @@ class MySql extends DbRestorer
 
     public function getContentsOfCredentialsFile(): string
     {
-        $contents = [
+        $contents = array(
             '[client]',
             "user = '{$this->userName}'",
             "password = '{$this->password}'",
             "host = '{$this->host}'",
             "port = '{$this->port}'",
-        ];
+        );
 
         return implode(PHP_EOL, $contents);
     }
 
     protected function guardAgainstIncompleteCredentials()
     {
-        foreach (['userName', 'dbName', 'host'] as $requiredProperty) {
+        foreach (array('userName', 'dbName', 'host') as $requiredProperty) {
             if (strlen($this->$requiredProperty) === 0) {
                 throw CannotStartRestore::emptyParameter($requiredProperty);
             }
