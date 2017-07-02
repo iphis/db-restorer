@@ -204,21 +204,24 @@ abstract class DbRestorer
 
     /**
      * @throws CannotStartRestore
+     *
      * @return void
      */
     abstract protected function guardAgainstIncompleteCredentials();
 
     /**
-     * Create the Process for handling the Restore (if necessary with ENV-Variables etc)
+     * Create the Process for handling the Restore (if necessary with ENV-Variables etc).
      *
      * @param string $dumpFile
+     *
      * @return Process
      */
     abstract protected function getRestoreProcess(string $dumpFile): Process;
 
     /**
      * @param Process $process
-     * @param string $outputFile
+     * @param string  $outputFile
+     *
      * @throws RestoreFailed
      */
     protected function checkIfRestoreWasSuccessFul(Process $process, string $outputFile)

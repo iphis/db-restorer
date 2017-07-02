@@ -118,6 +118,7 @@ class MySql extends DbRestorer
     /**
      * @param string $dumpFile
      * @param string $temporaryCredentialsFile
+     *
      * @return string
      */
     public function getRestoreCommand(string $dumpFile, string $temporaryCredentialsFile = ''): string
