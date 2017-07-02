@@ -40,7 +40,7 @@ class PostgreSql extends DbRestorer
             $this->getEnvironmentVariablesForRestoreCommand($temporaryCredentialsFile)
         );
 
-        if (! is_null($this->timeout)) {
+        if (!is_null($this->timeout)) {
             $process->setTimeout($this->timeout);
         }
 
@@ -63,21 +63,25 @@ class PostgreSql extends DbRestorer
             "-U {$this->userName}",
             '-h '.($this->socket === '' ? $this->host : $this->socket),
             "-p {$this->port}",
-            "-d {$this->port}",
-            "{$dumpFile}",
         ];
 
         foreach ($this->extraOptions as $extraOption) {
             $command[] = $extraOption;
         }
 
-        if (! empty($this->onlyTables)) {
+        if (!empty($this->getDbName())) {
+            $command[] = '-d '.$this->getDbName();
+        }
+
+        if (!empty($this->onlyTables)) {
             $command[] = '-t '.implode(' -t ', $this->onlyTables);
         }
 
-        if (! empty($this->excludeTables)) {
+        if (!empty($this->excludeTables)) {
             $command[] = '-T '.implode(' -T ', $this->excludeTables);
         }
+
+        $command[] = "{$dumpFile}";
 
         return implode(' ', $command);
     }

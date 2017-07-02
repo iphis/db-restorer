@@ -24,145 +24,80 @@ class PostgreSqlTest extends TestCase
     }
 
     /** @test */
-    public function it_can_generate_a_dump_command()
+    public function it_can_generate_a_restore_command()
     {
-        $dumpCommand = PostgreSql::create()
+        $restoreCommand = PostgreSql::create()
             ->setDbName('dbname')
             ->setUserName('username')
             ->setPassword('password')
             ->getRestoreCommand('dump.sql');
 
-        $this->assertSame('\'pg_dump\' -U username -h localhost -p 5432 --file="dump.sql"', $dumpCommand);
+        $this->assertSame('\'pg_restore\' -U username -h localhost -p 5432 -d dbname dump.sql', $restoreCommand);
     }
 
     /** @test */
-    public function it_can_generate_a_dump_command_with_using_inserts()
+    public function it_can_generate_a_restore_command_with_a_custom_port()
     {
-        $dumpCommand = PostgreSql::create()
-            ->setDbName('dbname')
-            ->setUserName('username')
-            ->setPassword('password')
-            ->useInserts()
-            ->getRestoreCommand('dump.sql');
-
-        $this->assertSame('\'pg_dump\' -U username -h localhost -p 5432 --file="dump.sql" --inserts', $dumpCommand);
-    }
-
-    /** @test */
-    public function it_can_generate_a_dump_command_with_a_custom_port()
-    {
-        $dumpCommand = PostgreSql::create()
+        $restoreCommand = PostgreSql::create()
             ->setDbName('dbname')
             ->setUserName('username')
             ->setPassword('password')
             ->setPort(1234)
             ->getRestoreCommand('dump.sql');
 
-        $this->assertSame('\'pg_dump\' -U username -h localhost -p 1234 --file="dump.sql"', $dumpCommand);
+        $this->assertSame('\'pg_restore\' -U username -h localhost -p 1234 -d dbname dump.sql', $restoreCommand);
     }
 
     /** @test */
-    public function it_can_generate_a_dump_command_with_custom_binary_path()
+    public function it_can_generate_a_restore_command_with_custom_binary_path()
     {
-        $dumpCommand = PostgreSql::create()
+        $restoreCommand = PostgreSql::create()
             ->setDbName('dbname')
             ->setUserName('username')
             ->setPassword('password')
             ->setRestoreBinaryPath('/custom/directory')
             ->getRestoreCommand('dump.sql');
 
-        $this->assertSame('\'/custom/directory/pg_dump\' -U username -h localhost -p 5432 --file="dump.sql"', $dumpCommand);
+        $this->assertSame('\'/custom/directory/pg_restore\' -U username -h localhost -p 5432 -d dbname dump.sql', $restoreCommand);
     }
 
     /** @test */
-    public function it_can_generate_a_dump_command_with_a_custom_socket()
+    public function it_can_generate_a_restore_command_with_a_custom_socket()
     {
-        $dumpCommand = PostgreSql::create()
+        $restoreCommand = PostgreSql::create()
             ->setDbName('dbname')
             ->setUserName('username')
             ->setPassword('password')
             ->setSocket('/var/socket.1234')
             ->getRestoreCommand('dump.sql');
 
-        $this->assertEquals('\'pg_dump\' -U username -h /var/socket.1234 -p 5432 --file="dump.sql"', $dumpCommand);
+        $this->assertEquals('\'pg_restore\' -U username -h /var/socket.1234 -p 5432 -d dbname dump.sql', $restoreCommand);
     }
 
     /** @test */
-    public function it_can_generate_a_dump_command_for_specific_tables_as_array()
+    public function it_can_generate_a_restore_command_for_specific_tables_as_array()
     {
-        $dumpCommand = PostgreSql::create()
+        $restoreCommand = PostgreSql::create()
             ->setDbName('dbname')
             ->setUserName('username')
             ->setPassword('password')
             ->onlyTables(['tb1', 'tb2', 'tb3'])
-            ->getRestoreCommand('dump.sql', 'credentials.txt');
+            ->getRestoreCommand('dump.sql');
 
-        $this->assertSame('\'pg_dump\' -U username -h localhost -p 5432 --file="dump.sql" -t tb1 -t tb2 -t tb3', $dumpCommand);
+        $this->assertSame('\'pg_restore\' -U username -h localhost -p 5432 -d dbname -t tb1 -t tb2 -t tb3 dump.sql', $restoreCommand);
     }
 
     /** @test */
-    public function it_can_generate_a_dump_command_for_specific_tables_as_string()
+    public function it_can_generate_a_restore_command_for_specific_tables_as_string()
     {
-        $dumpCommand = PostgreSql::create()
+        $restoreCommand = PostgreSql::create()
             ->setDbName('dbname')
             ->setUserName('username')
             ->setPassword('password')
             ->onlyTables('tb1, tb2, tb3')
-            ->getRestoreCommand('dump.sql', 'credentials.txt');
+            ->getRestoreCommand('dump.sql');
 
-        $this->assertSame('\'pg_dump\' -U username -h localhost -p 5432 --file="dump.sql" -t tb1 -t tb2 -t tb3', $dumpCommand);
-    }
-
-    /** @test */
-    public function it_will_throw_an_exception_when_setting_exclude_tables_after_setting_tables()
-    {
-        $this->expectException(CannotSetParameter::class);
-
-        PostgreSql::create()
-            ->setDbName('dbname')
-            ->setUserName('username')
-            ->setPassword('password')
-            ->onlyTables('tb1, tb2, tb3')
-            ->excludeTables('tb4, tb5, tb6');
-    }
-
-    /** @test */
-    public function it_can_generate_a_dump_command_excluding_tables_as_array()
-    {
-        $dumpCommand = PostgreSql::create()
-            ->setDbName('dbname')
-            ->setUserName('username')
-            ->setPassword('password')
-            ->excludeTables(['tb1', 'tb2', 'tb3'])
-            ->getRestoreCommand('dump.sql', 'credentials.txt');
-
-        $this->assertSame('\'pg_dump\' -U username -h localhost -p 5432 --file="dump.sql" -T tb1 -T tb2 -T tb3', $dumpCommand);
-    }
-
-    /** @test */
-    public function it_can_generate_a_dump_command_excluding_tables_as_string()
-    {
-        $dumpCommand = PostgreSql::create()
-            ->setDbName('dbname')
-            ->setUserName('username')
-            ->setPassword('password')
-            ->excludeTables('tb1, tb2, tb3')
-            ->getRestoreCommand('dump.sql', 'credentials.txt');
-
-        $this->assertSame('\'pg_dump\' -U username -h localhost -p 5432 --file="dump.sql" -T tb1 -T tb2 -T tb3', $dumpCommand);
-    }
-
-    /** @test */
-    public function it_will_throw_an_exception_when_setting_tables_after_setting_exclude_tables()
-    {
-        $this->expectException(CannotSetParameter::class);
-
-        PostgreSql::create()
-            ->setDbName('dbname')
-            ->setUserName('username')
-            ->setPassword('password')
-            ->excludeTables('tb1, tb2, tb3')
-            ->includeTables('tb4, tb5, tb6');
+        $this->assertSame('\'pg_restore\' -U username -h localhost -p 5432 -d dbname -t tb1 -t tb2 -t tb3 dump.sql', $restoreCommand);
     }
 
     /** @test */
@@ -192,14 +127,14 @@ class PostgreSqlTest extends TestCase
     /** @test */
     public function it_can_add_an_extra_option()
     {
-        $dumpCommand = PostgreSql::create()
+        $restoreCommand = PostgreSql::create()
             ->setDbName('dbname')
             ->setUserName('username')
             ->setPassword('password')
             ->addExtraOption('-something-else')
             ->getRestoreCommand('dump.sql');
 
-        $this->assertSame('\'pg_dump\' -U username -h localhost -p 5432 --file="dump.sql" -something-else', $dumpCommand);
+        $this->assertSame('\'pg_restore\' -U username -h localhost -p 5432 -something-else -d dbname dump.sql', $restoreCommand);
     }
 
     /** @test */
