@@ -8,26 +8,13 @@ use Symfony\Component\Process\Process;
 
 class PostgreSql extends DbRestorer
 {
-    /** @var bool */
-    protected $useInserts = false;
-
     public function __construct()
     {
         $this->port = 5432;
     }
 
-    /**
-     * Restore the contents of the database from the given file.
-     *
-     * @param string $dumpFile
-     *
-     * @throws \Iphis\DbRestorer\Exceptions\CannotStartRestore
-     * @throws \Iphis\DbRestorer\Exceptions\RestoreFailed
-     */
-    public function restoreFromFile(string $dumpFile)
+    protected function getRestoreProcess(string $dumpFile): Process
     {
-        $this->guardAgainstIncompleteCredentials();
-
         $command = $this->getRestoreCommand($dumpFile);
 
         $tempFileHandle = tmpfile();
@@ -44,18 +31,10 @@ class PostgreSql extends DbRestorer
             $process->setTimeout($this->timeout);
         }
 
-        $process->run();
-
-        $this->checkIfRestoreWasSuccessFul($process, $dumpFile);
+        return $process;
     }
 
-    /**
-     * Get the command that should be performed to dump the database.
-     *
-     * @param string $dumpFile
-     *
-     * @return string
-     */
+    /** {@inheritdoc} */
     public function getRestoreCommand(string $dumpFile): string
     {
         $command = array(
@@ -86,6 +65,7 @@ class PostgreSql extends DbRestorer
         return implode(' ', $command);
     }
 
+    /** {@inheritdoc} */
     public function getContentsOfCredentialsFile(): string
     {
         $contents = array(
@@ -99,6 +79,7 @@ class PostgreSql extends DbRestorer
         return implode(':', $contents);
     }
 
+    /** {@inheritdoc} */
     protected function guardAgainstIncompleteCredentials()
     {
         foreach (array('userName', 'dbName', 'host') as $requiredProperty) {

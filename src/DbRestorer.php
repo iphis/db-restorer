@@ -2,6 +2,7 @@
 
 namespace Iphis\DbRestorer;
 
+use Iphis\DbRestorer\Exceptions\CannotStartRestore;
 use Iphis\DbRestorer\Exceptions\RestoreFailed;
 use Symfony\Component\Process\Process;
 
@@ -182,8 +183,44 @@ abstract class DbRestorer
         return $this;
     }
 
-    abstract public function restoreFromFile(string $dumpFile);
+    /**
+     * Dump the contents of the database to the given file.
+     *
+     * @param string $dumpFile
+     *
+     * @throws \Iphis\DbRestorer\Exceptions\CannotStartRestore
+     * @throws \Iphis\DbRestorer\Exceptions\RestoreFailed
+     */
+    public function restoreFromFile(string $dumpFile)
+    {
+        $this->guardAgainstIncompleteCredentials();
 
+        $process = $this->getRestoreProcess($dumpFile);
+
+        $process->run();
+
+        $this->checkIfRestoreWasSuccessFul($process, $dumpFile);
+    }
+
+    /**
+     * @throws CannotStartRestore
+     * @return void
+     */
+    abstract protected function guardAgainstIncompleteCredentials();
+
+    /**
+     * Create the Process for handling the Restore (if necessary with ENV-Variables etc)
+     *
+     * @param string $dumpFile
+     * @return Process
+     */
+    abstract protected function getRestoreProcess(string $dumpFile): Process;
+
+    /**
+     * @param Process $process
+     * @param string $outputFile
+     * @throws RestoreFailed
+     */
     protected function checkIfRestoreWasSuccessFul(Process $process, string $outputFile)
     {
         if (!$process->isSuccessful()) {

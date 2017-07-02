@@ -97,18 +97,9 @@ class MySql extends DbRestorer
         return $this;
     }
 
-    /**
-     * Dump the contents of the database to the given file.
-     *
-     * @param string $dumpFile
-     *
-     * @throws \Iphis\DbRestorer\Exceptions\CannotStartRestore
-     * @throws \Iphis\DbRestorer\Exceptions\RestoreFailed
-     */
-    public function restoreFromFile(string $dumpFile)
+    /** {@inheritdoc} */
+    protected function getRestoreProcess(string $dumpFile): Process
     {
-        $this->guardAgainstIncompleteCredentials();
-
         $tempFileHandle = tmpfile();
         fwrite($tempFileHandle, $this->getContentsOfCredentialsFile());
         $temporaryCredentialsFile = stream_get_meta_data($tempFileHandle)['uri'];
@@ -121,25 +112,20 @@ class MySql extends DbRestorer
             $process->setTimeout($this->timeout);
         }
 
-        $process->run();
-
-        $this->checkIfRestoreWasSuccessFul($process, $dumpFile);
+        return $process;
     }
 
     /**
-     * Get the command that should be performed to dump the database.
-     *
      * @param string $dumpFile
      * @param string $temporaryCredentialsFile
-     *
      * @return string
      */
-    public function getRestoreCommand(string $dumpFile, string $temporaryCredentialsFile): string
+    public function getRestoreCommand(string $dumpFile, string $temporaryCredentialsFile = ''): string
     {
         $quote = $this->determineQuote();
 
         $command = array(
-            "{$quote}{$this->restoreBinaryPath}mysqldump{$quote}",
+            "{$quote}{$this->restoreBinaryPath}mysqlrestore{$quote}",
             "--defaults-extra-file=\"{$temporaryCredentialsFile}\"",
         );
 
@@ -155,10 +141,6 @@ class MySql extends DbRestorer
 
         if ($this->socket !== '') {
             $command[] = "--socket={$this->socket}";
-        }
-
-        foreach ($this->excludeTables as $tableName) {
-            $command[] = "--ignore-table={$this->dbName}.{$tableName}";
         }
 
         if (!empty($this->defaultCharacterSet)) {

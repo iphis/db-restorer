@@ -79,19 +79,13 @@ class MongoDb extends DbRestorer
         return $this;
     }
 
-    /**
-     * Generate the dump command for MongoDb.
-     *
-     * @param string $filename
-     *
-     * @return string
-     */
-    public function getRestoreCommand(string $filename): string
+    /** {@inheritdoc} */
+    public function getRestoreCommand(string $dumpFile, string $temporaryCredentialsFile = ''): string
     {
         $command = array(
             "'{$this->restoreBinaryPath}mongodump'",
             "--db {$this->dbName}",
-            "--archive=$filename",
+            "--archive=$dumpFile",
         );
 
         if (isset($this->userName)) {

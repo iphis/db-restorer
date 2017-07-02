@@ -29,14 +29,8 @@ class Sqlite extends DbRestorer
         $this->checkIfRestoreWasSuccessFul($process, $dumpFile);
     }
 
-    /**
-     * Get the command that should be performed to dump the database.
-     *
-     * @param string $dumpFile
-     *
-     * @return string
-     */
-    public function getRestoreCommand(string $dumpFile): string
+    /** {@inheritdoc} */
+    public function getRestoreCommand(string $dumpFile, string $temporaryCredentialsFile = ''): string
     {
         return implode(
             ' ',

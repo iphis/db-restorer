@@ -140,60 +140,6 @@ class MySqlTest extends TestCase
     }
 
     /** @test */
-    public function it_will_throw_an_exception_when_setting_exclude_tables_after_setting_tables()
-    {
-        $this->expectException(CannotSetParameter::class);
-
-        MySql::create()
-            ->setDbName('dbname')
-            ->setUserName('username')
-            ->setPassword('password')
-            ->onlyTables('tb1 tb2 tb3')
-            ->excludeTables('tb4 tb5 tb6');
-    }
-
-    /** @test */
-    public function it_can_generate_a_dump_command_excluding_tables_as_array()
-    {
-        $dumpCommand = MySql::create()
-            ->setDbName('dbname')
-            ->setUserName('username')
-            ->setPassword('password')
-            ->excludeTables(['tb1', 'tb2', 'tb3'])
-            ->getRestoreCommand('dump.sql', 'credentials.txt');
-
-        $this->assertSame('\'mysqldump\' --defaults-extra-file="credentials.txt" --skip-comments --extended-insert '.
-            '--ignore-table=dbname.tb1 --ignore-table=dbname.tb2 --ignore-table=dbname.tb3 --result-file="dump.sql" dbname', $dumpCommand);
-    }
-
-    /** @test */
-    public function it_can_generate_a_dump_command_excluding_tables_as_string()
-    {
-        $dumpCommand = MySql::create()
-            ->setDbName('dbname')
-            ->setUserName('username')
-            ->setPassword('password')
-            ->excludeTables('tb1, tb2, tb3')
-            ->getRestoreCommand('dump.sql', 'credentials.txt');
-
-        $this->assertSame('\'mysqldump\' --defaults-extra-file="credentials.txt" --skip-comments --extended-insert '.
-            '--ignore-table=dbname.tb1 --ignore-table=dbname.tb2 --ignore-table=dbname.tb3 --result-file="dump.sql" dbname', $dumpCommand);
-    }
-
-    /** @test */
-    public function it_will_throw_an_exception_when_setting_tables_after_setting_esclude_tables()
-    {
-        $this->expectException(CannotSetParameter::class);
-
-        MySql::create()
-            ->setDbName('dbname')
-            ->setUserName('username')
-            ->setPassword('password')
-            ->excludeTables('tb1 tb2 tb3')
-            ->includeTables('tb4 tb5 tb6');
-    }
-
-    /** @test */
     public function it_can_generate_the_contents_of_a_credentials_file()
     {
         $credentialsFileContent = MySql::create()

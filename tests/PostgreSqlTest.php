@@ -2,10 +2,9 @@
 
 namespace Iphis\DbRestorer\Test;
 
-use PHPUnit\Framework\TestCase;
 use Iphis\DbRestorer\Databases\PostgreSql;
-use Iphis\DbRestorer\Exceptions\CannotSetParameter;
 use Iphis\DbRestorer\Exceptions\CannotStartRestore;
+use PHPUnit\Framework\TestCase;
 
 class PostgreSqlTest extends TestCase
 {
@@ -58,7 +57,10 @@ class PostgreSqlTest extends TestCase
             ->setRestoreBinaryPath('/custom/directory')
             ->getRestoreCommand('dump.sql');
 
-        $this->assertSame('\'/custom/directory/pg_restore\' -U username -h localhost -p 5432 -d dbname dump.sql', $restoreCommand);
+        $this->assertSame(
+            '\'/custom/directory/pg_restore\' -U username -h localhost -p 5432 -d dbname dump.sql',
+            $restoreCommand
+        );
     }
 
     /** @test */
@@ -71,7 +73,10 @@ class PostgreSqlTest extends TestCase
             ->setSocket('/var/socket.1234')
             ->getRestoreCommand('dump.sql');
 
-        $this->assertEquals('\'pg_restore\' -U username -h /var/socket.1234 -p 5432 -d dbname dump.sql', $restoreCommand);
+        $this->assertEquals(
+            '\'pg_restore\' -U username -h /var/socket.1234 -p 5432 -d dbname dump.sql',
+            $restoreCommand
+        );
     }
 
     /** @test */
@@ -84,7 +89,10 @@ class PostgreSqlTest extends TestCase
             ->onlyTables(['tb1', 'tb2', 'tb3'])
             ->getRestoreCommand('dump.sql');
 
-        $this->assertSame('\'pg_restore\' -U username -h localhost -p 5432 -d dbname -t tb1 -t tb2 -t tb3 dump.sql', $restoreCommand);
+        $this->assertSame(
+            '\'pg_restore\' -U username -h localhost -p 5432 -d dbname -t tb1 -t tb2 -t tb3 dump.sql',
+            $restoreCommand
+        );
     }
 
     /** @test */
@@ -97,7 +105,10 @@ class PostgreSqlTest extends TestCase
             ->onlyTables('tb1, tb2, tb3')
             ->getRestoreCommand('dump.sql');
 
-        $this->assertSame('\'pg_restore\' -U username -h localhost -p 5432 -d dbname -t tb1 -t tb2 -t tb3 dump.sql', $restoreCommand);
+        $this->assertSame(
+            '\'pg_restore\' -U username -h localhost -p 5432 -d dbname -t tb1 -t tb2 -t tb3 dump.sql',
+            $restoreCommand
+        );
     }
 
     /** @test */
@@ -134,7 +145,10 @@ class PostgreSqlTest extends TestCase
             ->addExtraOption('-something-else')
             ->getRestoreCommand('dump.sql');
 
-        $this->assertSame('\'pg_restore\' -U username -h localhost -p 5432 -something-else -d dbname dump.sql', $restoreCommand);
+        $this->assertSame(
+            '\'pg_restore\' -U username -h localhost -p 5432 -something-else -d dbname dump.sql',
+            $restoreCommand
+        );
     }
 
     /** @test */
