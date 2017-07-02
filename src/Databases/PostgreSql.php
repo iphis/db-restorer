@@ -3,8 +3,8 @@
 namespace Iphis\DbRestorer\Databases;
 
 use Iphis\DbRestorer\DbRestorer;
-use Symfony\Component\Process\Process;
 use Iphis\DbRestorer\Exceptions\CannotStartRestore;
+use Symfony\Component\Process\Process;
 
 class PostgreSql extends DbRestorer
 {
