@@ -9,7 +9,6 @@ class Sqlite extends DbRestorer
 {
     protected function guardAgainstIncompleteCredentials()
     {
-        return;
     }
 
     protected function getRestoreProcess(string $dumpFile): Process

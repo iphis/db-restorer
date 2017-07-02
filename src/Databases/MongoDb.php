@@ -69,6 +69,7 @@ class MongoDb extends DbRestorer
 
     /**
      * @param string $dumpFile
+     *
      * @return string
      */
     public function getRestoreCommand(string $dumpFile): string
