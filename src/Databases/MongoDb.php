@@ -17,31 +17,6 @@ class MongoDb extends DbRestorer
     protected $enableCompression = false;
 
     /**
-     * Dump the contents of the database to the given file.
-     *
-     * @param string $dumpFile
-     *
-     * @throws \Iphis\DbRestorer\Exceptions\CannotStartRestore
-     * @throws \Iphis\DbRestorer\Exceptions\RestoreFailed
-     */
-    public function restoreFromFile(string $dumpFile)
-    {
-        $this->guardAgainstIncompleteCredentials();
-
-        $command = $this->getRestoreCommand($dumpFile);
-
-        $process = new Process($command);
-
-        if (!is_null($this->timeout)) {
-            $process->setTimeout($this->timeout);
-        }
-
-        $process->run();
-
-        $this->checkIfRestoreWasSuccessFul($process, $dumpFile);
-    }
-
-    /**
      * Verifies if the dbname and host options are set.
      *
      * @throws \Iphis\DbRestorer\Exceptions\CannotStartRestore
@@ -79,8 +54,24 @@ class MongoDb extends DbRestorer
         return $this;
     }
 
-    /** {@inheritdoc} */
-    public function getRestoreCommand(string $dumpFile, string $temporaryCredentialsFile = ''): string
+    protected function getRestoreProcess(string $dumpFile): Process
+    {
+        $command = $this->getRestoreCommand($dumpFile);
+
+        $process = new Process($command);
+
+        if (!is_null($this->timeout)) {
+            $process->setTimeout($this->timeout);
+        }
+
+        return $process;
+    }
+
+    /**
+     * @param string $dumpFile
+     * @return string
+     */
+    public function getRestoreCommand(string $dumpFile): string
     {
         $command = array(
             "'{$this->restoreBinaryPath}mongodump'",

@@ -7,14 +7,12 @@ use Symfony\Component\Process\Process;
 
 class Sqlite extends DbRestorer
 {
-    /**
-     * Dump the contents of the database to a given file.
-     *
-     * @param string $dumpFile
-     *
-     * @throws \Iphis\DbRestorer\Exceptions\RestoreFailed
-     */
-    public function restoreFromFile(string $dumpFile)
+    protected function guardAgainstIncompleteCredentials()
+    {
+        return;
+    }
+
+    protected function getRestoreProcess(string $dumpFile): Process
     {
         $command = $this->getRestoreCommand($dumpFile);
 
@@ -24,13 +22,11 @@ class Sqlite extends DbRestorer
             $process->setTimeout($this->timeout);
         }
 
-        $process->run();
-
-        $this->checkIfRestoreWasSuccessFul($process, $dumpFile);
+        return $process;
     }
 
     /** {@inheritdoc} */
-    public function getRestoreCommand(string $dumpFile, string $temporaryCredentialsFile = ''): string
+    public function getRestoreCommand(string $dumpFile): string
     {
         return implode(
             ' ',
