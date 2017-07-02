@@ -3,8 +3,8 @@
 namespace Iphis\DbRestorer\Databases;
 
 use Iphis\DbRestorer\DbRestorer;
-use Iphis\DbRestorer\Exceptions\CannotStartRestore;
 use Symfony\Component\Process\Process;
+use Iphis\DbRestorer\Exceptions\CannotStartRestore;
 
 class PostgreSql extends DbRestorer
 {
@@ -40,7 +40,7 @@ class PostgreSql extends DbRestorer
             $this->getEnvironmentVariablesForRestoreCommand($temporaryCredentialsFile)
         );
 
-        if (!is_null($this->timeout)) {
+        if (! is_null($this->timeout)) {
             $process->setTimeout($this->timeout);
         }
 
@@ -71,11 +71,11 @@ class PostgreSql extends DbRestorer
             $command[] = $extraOption;
         }
 
-        if (!empty($this->onlyTables)) {
+        if (! empty($this->onlyTables)) {
             $command[] = '-t '.implode(' -t ', $this->onlyTables);
         }
 
-        if (!empty($this->excludeTables)) {
+        if (! empty($this->excludeTables)) {
             $command[] = '-T '.implode(' -T ', $this->excludeTables);
         }
 

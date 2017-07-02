@@ -3,8 +3,8 @@
 namespace Iphis\DbRestorer\Databases;
 
 use Iphis\DbRestorer\DbRestorer;
-use Iphis\DbRestorer\Exceptions\CannotStartRestore;
 use Symfony\Component\Process\Process;
+use Iphis\DbRestorer\Exceptions\CannotStartRestore;
 
 class MongoDb extends DbRestorer
 {
@@ -32,7 +32,7 @@ class MongoDb extends DbRestorer
 
         $process = new Process($command);
 
-        if (!is_null($this->timeout)) {
+        if (! is_null($this->timeout)) {
             $process->setTimeout($this->timeout);
         }
 

@@ -4,8 +4,8 @@ namespace Iphis\DbRestorer\Test;
 
 use PHPUnit\Framework\TestCase;
 use Iphis\DbRestorer\Databases\PostgreSql;
-use Iphis\DbRestorer\Exceptions\CannotStartRestore;
 use Iphis\DbRestorer\Exceptions\CannotSetParameter;
+use Iphis\DbRestorer\Exceptions\CannotStartRestore;
 
 class PostgreSqlTest extends TestCase
 {

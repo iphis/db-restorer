@@ -4,8 +4,8 @@ namespace Iphis\DbRestorer\Test;
 
 use PHPUnit\Framework\TestCase;
 use Iphis\DbRestorer\Databases\MySql;
-use Iphis\DbRestorer\Exceptions\CannotStartRestore;
 use Iphis\DbRestorer\Exceptions\CannotSetParameter;
+use Iphis\DbRestorer\Exceptions\CannotStartRestore;
 
 class MySqlTest extends TestCase
 {
