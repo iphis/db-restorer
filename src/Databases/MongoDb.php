@@ -3,8 +3,8 @@
 namespace Iphis\DbRestorer\Databases;
 
 use Iphis\DbRestorer\DbRestorer;
-use Symfony\Component\Process\Process;
 use Iphis\DbRestorer\Exceptions\CannotStartRestore;
+use Symfony\Component\Process\Process;
 
 class MongoDb extends DbRestorer
 {
@@ -32,7 +32,7 @@ class MongoDb extends DbRestorer
 
         $process = new Process($command);
 
-        if (! is_null($this->timeout)) {
+        if (!is_null($this->timeout)) {
             $process->setTimeout($this->timeout);
         }
 
@@ -45,11 +45,12 @@ class MongoDb extends DbRestorer
      * Verifies if the dbname and host options are set.
      *
      * @throws \Iphis\DbRestorer\Exceptions\CannotStartRestore
+     *
      * @return void
      */
     protected function guardAgainstIncompleteCredentials()
     {
-        foreach (['dbName', 'host'] as $requiredProperty) {
+        foreach (array('dbName', 'host') as $requiredProperty) {
             if (strlen($this->$requiredProperty) === 0) {
                 throw CannotStartRestore::emptyParameter($requiredProperty);
             }
@@ -87,11 +88,11 @@ class MongoDb extends DbRestorer
      */
     public function getRestoreCommand(string $filename): string
     {
-        $command = [
+        $command = array(
             "'{$this->restoreBinaryPath}mongodump'",
             "--db {$this->dbName}",
             "--archive=$filename",
-        ];
+        );
 
         if (isset($this->userName)) {
             $command[] = "--username {$this->userName}";
