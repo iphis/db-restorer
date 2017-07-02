@@ -20,7 +20,7 @@ class Sqlite extends DbRestorer
 
         $process = new Process($command);
 
-        if (!is_null($this->timeout)) {
+        if (! is_null($this->timeout)) {
             $process->setTimeout($this->timeout);
         }
 

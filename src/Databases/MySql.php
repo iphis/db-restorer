@@ -3,8 +3,8 @@
 namespace Iphis\DbRestorer\Databases;
 
 use Iphis\DbRestorer\DbRestorer;
-use Iphis\DbRestorer\Exceptions\CannotStartRestore;
 use Symfony\Component\Process\Process;
+use Iphis\DbRestorer\Exceptions\CannotStartRestore;
 
 class MySql extends DbRestorer
 {
@@ -117,7 +117,7 @@ class MySql extends DbRestorer
 
         $process = new Process($command);
 
-        if (!is_null($this->timeout)) {
+        if (! is_null($this->timeout)) {
             $process->setTimeout($this->timeout);
         }
 
@@ -161,7 +161,7 @@ class MySql extends DbRestorer
             $command[] = "--ignore-table={$this->dbName}.{$tableName}";
         }
 
-        if (!empty($this->defaultCharacterSet)) {
+        if (! empty($this->defaultCharacterSet)) {
             $command[] = '--default-character-set='.$this->defaultCharacterSet;
         }
 
@@ -173,7 +173,7 @@ class MySql extends DbRestorer
 
         $command[] = "{$this->dbName}";
 
-        if (!empty($this->onlyTables)) {
+        if (! empty($this->onlyTables)) {
             $command[] = implode(' ', $this->onlyTables);
         }
 

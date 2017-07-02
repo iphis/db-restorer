@@ -2,8 +2,8 @@
 
 namespace Iphis\DbRestorer;
 
-use Iphis\DbRestorer\Exceptions\RestoreFailed;
 use Symfony\Component\Process\Process;
+use Iphis\DbRestorer\Exceptions\RestoreFailed;
 
 abstract class DbRestorer
 {
@@ -159,7 +159,7 @@ abstract class DbRestorer
      */
     public function onlyTables($onlyTables)
     {
-        if (!is_array($onlyTables)) {
+        if (! is_array($onlyTables)) {
             $onlyTables = explode(', ', $onlyTables);
         }
 
@@ -175,7 +175,7 @@ abstract class DbRestorer
      */
     public function addExtraOption(string $extraOption)
     {
-        if (!empty($extraOption)) {
+        if (! empty($extraOption)) {
             $this->extraOptions[] = $extraOption;
         }
 
@@ -186,11 +186,11 @@ abstract class DbRestorer
 
     protected function checkIfRestoreWasSuccessFul(Process $process, string $outputFile)
     {
-        if (!$process->isSuccessful()) {
+        if (! $process->isSuccessful()) {
             throw RestoreFailed::processDidNotEndSuccessfully($process);
         }
 
-        if (!file_exists($outputFile)) {
+        if (! file_exists($outputFile)) {
             throw RestoreFailed::restorefileWasNotReadable();
         }
 
